@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hệ thống Kiểm tra Trực tuyến</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- KaTeX hiển thị công thức Toán -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMath()"></script>
+</head>
+<body class="bg-gray-50 min-h-screen py-8 px-4 flex items-center justify-center">
+
+  <div class="max-w-3xl w-full mx-auto bg-white p-6 md:p-8 rounded-2xl shadow-xl border border-gray-100">
+    
+    <!-- 1. MÀN HÌNH CHỜ / ĐĂNG NHẬP (Ban đầu hiện, khi bấm bắt đầu sẽ ẩn đi) -->
+    <div id="login-screen" class="text-center py-6">
+      <div class="inline-block p-3 bg-blue-50 text-blue-600 rounded-full mb-4">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+      </div>
+      <h2 class="text-xs text-gray-400 font-bold uppercase tracking-wider">Trường CĐ Lương thực - Thực phẩm</h2>
+      <h1 class="text-2xl font-bold text-blue-900 mt-1 mb-2">KIỂM TRA GIỮA HỌC KỲ 1 - MÔN TOÁN 12</h1>
+      <p class="text-sm text-gray-500 mb-6">Mã đề: 101 | Thời gian làm bài: 90 phút</p>
+
+      <div class="max-w-md mx-auto bg-blue-50/50 p-6 rounded-xl border border-blue-100 text-left mb-6">
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Họ và tên học viên <span class="text-red-500">*</span></label>
+          <input type="text" id="fullname" placeholder="Ví dụ: Nguyễn Văn A" class="w-full p-3 bg-white border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Lớp / Số báo danh <span class="text-red-500">*</span></label>
+          <input type="text" id="student_id" placeholder="Ví dụ: 12A1 - SBD 01" class="w-full p-3 bg-white border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+        </div>
+      </div>
+
+      <button onclick="startExam()" class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg transition transform active:scale-95">
+        BẮT ĐẦU LÀM BÀI 🚀
+      </button>
+    </div>
+
+    <!-- 2. MÀN HÌNH LÀM BÀI (Ban đầu ẩn đi, khi bấm bắt đầu mới hiện ra) -->
+    <div id="exam-screen" class="hidden">
+      <!-- Header bài thi -->
+      <div class="flex justify-between items-center border-b pb-3 mb-6">
+        <div>
+          <h2 id="student-greeting" class="text-sm font-bold text-blue-900"></h2>
+          <span class="text-xs text-gray-500">Mã đề: 101</span>
+        </div>
+        <div class="text-right">
+          <span id="question-type" class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-semibold">Trắc nghiệm</span>
+        </div>
+      </div>
+
+      <!-- Khung chứa câu hỏi -->
+      <div class="min-h-[240px]">
+        <div class="flex justify-between items-center mb-2 text-sm font-semibold text-gray-600">
+          <span id="question-header">Câu hỏi 1 / 21</span>
+        </div>
+        <div id="question-text" class="text-gray-800 text-base md:text-lg mb-4 leading-relaxed font-normal"></div>
+        <div id="answer-box" class="mt-4 p-4 bg-gray-50 rounded-xl border border-gray-200"></div>
+      </div>
+
+      <!-- Điều hướng & Nút nộp bài -->
+      <div class="mt-8 pt-4 border-t">
+        <div class="flex flex-wrap gap-1.5 justify-center mb-6" id="pagination-dots"></div>
+
+        <div class="flex justify-between items-center">
+          <button id="btn-prev" onclick="prevQuestion()" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium disabled:opacity-40 transition">
+            ← Câu trước
+          </button>
+          <button id="btn-submit" onclick="submitExam()" class="px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg shadow-md transition">
+            NỘP BÀI ONLINE
+          </button>
+          <button id="btn-next" onclick="nextQuestion()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition">
+            Câu tiếp theo →
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const SCRIPT_URL = "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL"; // Thay link Apps Script của thầy vào đây
+
+    const questions = [
+      { id: 1, part: "Phần I", type: "mcq", text: "<b>Câu 1.</b> Cho hàm số $y=f(x)$ có bảng biến thiên. Giá trị nhỏ nhất của hàm số $y=f(x)$ trên khoảng $(1;+\\infty)$ bằng:", options: ["A. -1.", "B. 0.", "C. 3.", "D. -2."] },
+      { id: 2, part: "Phần I", type: "mcq", text: "<b>Câu 2.</b> Cho hàm số $y=x^{3}-3x^{2}-9x+5.$ Khẳng định nào sau đây đúng?", options: ["A. Hàm số nghịch biến trên khoảng $(-\\infty;-1)$.", "B. Hàm số đồng biến trên $(-1;3)$.", "C. Hàm số đồng biến trên mỗi khoảng $(-\\infty;-1), (3;+\\infty)$.", "D. Hàm số đồng biến trên khoảng $(-\\infty;-1)\\cup(3;+\\infty)$"] },
+      { id: 3, part: "Phần I", type: "mcq", text: "<b>Câu 3.</b> Cho hàm số bậc bốn $y=f(x)$ có đồ thị đạo hàm $y=f'(x)$. Hàm số đã cho đạt cực đại tại điểm nào dưới đây?", options: ["A. $x=4$.", "B. $x=-1.$", "C. $x=0.$", "D. $x=1$"] },
+      { id: 4, part: "Phần I", type: "mcq", text: "<b>Câu 4.</b> Cho hàm số $y=f(x)$ có đồ thị. Giá trị lớn nhất của hàm số $y=f(x)$ trên đoạn $[0;2]$ bằng:", options: ["A. 4.", "B. 0.", "C. 8.", "D. 6."] },
+      { id: 5, part: "Phần I", type: "mcq", text: "<b>Câu 5.</b> Cho hàm số $y=f(x)$ liên tục trên $\\mathbb{R}$ và có bảng xét dấu đạo hàm. Hàm số đã cho nghịch biến trên khoảng nào dưới đây?", options: ["A. $(-\\infty;-2)$.", "B. $(1;2)$.", "C. $(-3;-1)$.", "D. $(2;+\\infty)$"] },
+      { id: 6, part: "Phần I", type: "mcq", text: "<b>Câu 6.</b> Cho hàm số $f(x)$ có bảng xét dấu của đạo hàm $f'(x)$. Giá trị nào dưới đây là cực tiểu của hàm số $f(x)$?", options: ["A. $f(4)$", "B. $f(0)$", "C. 4.", "D. $f(3)$."] },
+      { id: 7, part: "Phần I", type: "mcq", text: "<b>Câu 7.</b> Cho hàm số $y=x^{3}-3x^{2}$. Mệnh đề nào dưới đây đúng?", options: ["A. Hàm số nghịch biến trên khoảng $(-\\infty;0)$", "B. Hàm số nghịch biến trên khoảng $(2;+\\infty)$", "C. Hàm số đồng biến trên khoảng $(0;2)$", "D. Hàm số nghịch biến trên khoảng $(0;2)$"] },
+      { id: 8, part: "Phần I", type: "mcq", text: "<b>Câu 8.</b> Cho hàm số $y=f(x)$ liên tục trên $\\mathbb{R}$ có đồ thị. Phương trình $f(x)=m$ có ba nghiệm thực phân biệt khi và chỉ khi:", options: ["A. $m\\in(-1;3)$.", "B. $m\\in[-1;3]$", "C. $m\\in(-3;1)$.", "D. $m\\in[-3;1]$."] },
+      { id: 9, part: "Phần I", type: "mcq", text: "<b>Câu 9.</b> Cho hàm số $y=f(x)$ có bảng biến thiên. Tổng số đường tiệm cận ngang và tiệm cận đứng của đồ thị hàm số là:", options: ["A. 1.", "B. 3.", "C. 2.", "D. 4."] },
+      { id: 10, part: "Phần I", type: "mcq", text: "<b>Câu 10.</b> Cho hàm số $y=f(x)$ liên tục trên $\\mathbb{R}$ và có đồ thị. Hàm số đã cho đồng biến trên khoảng nào dưới đây?", options: ["A. $(-2;0)$", "B. $(1;2)$.", "C. $(-1;1)$", "D. $(-1;2)$"] },
+      { id: 11, part: "Phần I", type: "mcq", text: "<b>Câu 11.</b> Đường tiệm cận ngang của đồ thị hàm số $y=\\frac{3x+2}{x-1}$ có phương trình là:", options: ["A. $y=1$.", "B. $x=1$", "C. $y=3$.", "D. $x=3.$"] },
+      { id: 12, part: "Phần I", type: "mcq", text: "<b>Câu 12.</b> Cho hàm số $y=f(x)$ thỏa mãn $\\lim_{x\\to-\\infty}y=1$ và $\\lim_{x\\to+\\infty}y=2$. Khẳng định nào dưới đây đúng?", options: ["A. Đồ thị hàm số không có đường tiệm cận ngang.", "B. Đồ thị hàm số có hai đường tiệm cận ngang là $y=1, y=2$.", "C. Đồ thị hàm số có hai đường tiệm cận ngang là $x=1, x=2$.", "D. Đồ thị hàm số có duy nhất một đường tiệm cận ngang."] },
+      { id: 13, part: "Phần II", type: "tf", text: "<b>Câu 1.</b> Cho hàm số $y=\\frac{2x+3}{1-x}$", items: ["a) Đạo hàm của hàm số là $f'(x)=\\frac{5}{(1-x)^{2}}, \\forall x\\neq 1$.", "b) Tâm đối xứng của đồ thị hàm số trên có tọa độ là $I(1;-2)$ .", "c) Giá trị nhỏ nhất của hàm số trên đoạn $[3;5]$ bằng $-\\frac{13}{4}$ .", "d) Hàm số có hai cực trị."] },
+      { id: 14, part: "Phần II", type: "tf", text: "<b>Câu 2.</b> Cho hàm số $y=f(x)=ax^{3}+bx^{2}+cx+d$ có đồ thị:", items: ["a) Hàm số đạt cực đại tại $x=3$", "b) Hàm số đồng biến trên khoảng $(-1;1)$.", "c) Giá trị lớn nhất của hàm số trên khoảng $(-\\infty;0)$ là 3.", "d) Đồ thị hàm số cắt trục tung tại điểm có tọa độ $(0;1)$."] },
+      { id: 15, part: "Phần III", type: "short", text: "<b>Câu 1.</b> Biết tọa độ tâm đối xứng của đồ thị hàm số $y=x^{3}+3x^{2}-9x+1$ là $I(a;b)$. Tính $2a+b$?" },
+      { id: 16, part: "Phần III", type: "short", text: "<b>Câu 2.</b> Cho một tấm nhôm hình vuông cạnh 3cm, người ta cắt ở 4 góc bốn hình vuông bằng nhau, rồi gấp tấm nhôm lại để được một cái hộp không nắp. Tính cạnh của các hình vuông bị cắt sao cho thể tích của khối hộp là lớn nhất?" },
+      { id: 17, part: "Phần III", type: "short", text: "<b>Câu 3.</b> Cho hàm số $y=f(x)$ liên tục trên $\\mathbb{R}\\setminus\\{1\\}$ có bảng biến thiên. Tính tổng số đường tiệm cận đứng và đường tiệm cận ngang của đồ thị hàm số $y=f(x)$?" },
+      { id: 18, part: "Phần III", type: "short", text: "<b>Câu 4.</b> Cho hàm số $y=f(x)=\\frac{2x^{2}+26x+18}{x+13}$ có điểm cực tiểu $x=x_{1}$ và điểm cực đại $x=x_{2}$. Tính $P=-2x_{1}+x_{2}$?" },
+      { id: 19, part: "Phần IV", type: "essay", text: "<b>Câu 1.</b> Tìm giá trị lớn nhất, giá trị nhỏ nhất hàm số $y=\\frac{x+3}{x-1}$ trên đoạn $[2;4]$." },
+      { id: 20, part: "Phần IV", type: "essay", text: "<b>Câu 2.</b> Tìm tiệm cận đứng và tiệm cận xiên của đồ thị hàm số $y=f(x)=\\frac{x^{2}-x+2}{x-1}$." },
+      { id: 21, part: "Phần IV", type: "essay", text: "<b>Câu 3.</b> Một hộ làm nghề dệt vải lụa tơ tằm sản suất mỗi ngày được $x$ mét vải ($1\\le x\\le 18$). Tổng chi phí sản xuất $x$ mét vải lụa, tính bằng nghìn đồng, cho bởi hàm chi phí: $C(x)=x^{3}-3x^{2}-9x+500$. Giá bán 180 nghìn đồng/mét. Hỏi lợi nhuận tối đa của hộ làm nghề dệt trong một ngày (tính bằng nghìn đồng)?" }
+    ];
+
+    let currentIndex = 0;
+    let userAnswers = {};
+    let studentName = "";
+    let studentId = "";
+
+    function renderMath() {
+      if (typeof renderMathInElement !== 'undefined') {
+        renderMathInElement(document.body, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false},
+            {left: '\\(', right: '\\)', display: false},
+            {left: '\\[', right: '\\]', display: true}
+          ],
+          throwOnError: false
+        });
+      }
+    }
+
+    // Khi học sinh bấm bắt đầu làm bài
+    function startExam() {
+      studentName = document.getElementById('fullname').value.trim();
+      studentId = document.getElementById('student_id').value.trim();
+
+      if (!studentName || !studentId) {
+        alert('Vui lòng nhập đầy đủ Họ tên và Lớp/SBD để bắt đầu!');
+        return;
+      }
+
+      // Ẩn màn hình đăng nhập, hiện màn hình làm bài
+      document.getElementById('login-screen').classList.add('hidden');
+      document.getElementById('exam-screen').classList.remove('hidden');
+      
+      document.getElementById('student-greeting').innerText = `Học viên: ${studentName} (${studentId})`;
+      
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const q = questions[currentIndex];
+      document.getElementById('question-header').innerText = `${q.part} - Câu ${currentIndex + 1} / ${questions.length}`;
+      document.getElementById('question-type').innerText = q.type === 'mcq' ? 'Trắc nghiệm' : (q.type === 'tf' ? 'Đúng / Sai' : (q.type === 'short' ? 'Trả lời ngắn' : 'Tự luận'));
+      document.getElementById('question-text').innerHTML = q.text;
+
+      const box = document.getElementById('answer-box');
+      box.innerHTML = '';
+
+      if (q.type === 'mcq') {
+        q.options.forEach((opt, idx) => {
+          const key = ['A', 'B', 'C', 'D'][idx];
+          const checked = userAnswers[q.id] === key ? 'checked' : '';
+          box.innerHTML += `
+            <label class="flex items-center p-3 mb-2 bg-white rounded-lg border border-gray-200 hover:bg-blue-50 cursor-pointer transition">
+              <input type="radio" name="q_${q.id}" value="${key}" ${checked} onchange="saveAnswer(${q.id}, '${key}')" class="w-4 h-4 text-blue-600">
+              <span class="ml-3 text-gray-700">${opt}</span>
+            </label>`;
+        });
+      } else if (q.type === 'tf') {
+        q.items.forEach((item, idx) => {
+          const currentVal = userAnswers[q.id] ? userAnswers[q.id][idx] : '';
+          box.innerHTML += `
+            <div class="mb-3 p-3 bg-white rounded-lg border border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+              <span class="text-sm font-medium text-gray-800 mb-2 sm:mb-0">${item}</span>
+              <div class="flex gap-4">
+                <label class="inline-flex items-center cursor-pointer"><input type="radio" name="q_${q.id}_${idx}" value="Đúng" ${currentVal === 'Đúng' ? 'checked' : ''} onchange="saveTFAnswer(${q.id}, ${idx}, 'Đúng')" class="text-green-600"> <span class="ml-1 text-sm font-medium">Đúng</span></label>
+                <label class="inline-flex items-center cursor-pointer"><input type="radio" name="q_${q.id}_${idx}" value="Sai" ${currentVal === 'Sai' ? 'checked' : ''} onchange="saveTFAnswer(${q.id}, ${idx}, 'Sai')" class="text-red-600"> <span class="ml-1 text-sm font-medium">Sai</span></label>
+              </div>
+            </div>`;
+        });
+      } else if (q.type === 'short') {
+        const val = userAnswers[q.id] || '';
+        box.innerHTML = `
+          <label class="block text-sm font-medium text-gray-700 mb-1">Điền kết quả / đáp số của bạn:</label>
+          <input type="text" value="${val}" oninput="saveAnswer(${q.id}, this.value)" placeholder="Nhập đáp số..." class="w-full p-3 bg-white border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">`;
+      } else if (q.type === 'essay') {
+        const val = userAnswers[q.id] || '';
+        box.innerHTML = `
+          <label class="block text-sm font-medium text-gray-700 mb-1">Trình bày lời giải chi tiết:</label>
+          <textarea rows="5" oninput="saveAnswer(${q.id}, this.value)" placeholder="Nhập các bước giải tự luận tại đây..." class="w-full p-3 bg-white border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">${val}</textarea>`;
+      }
+
+      document.getElementById('btn-prev').disabled = currentIndex === 0;
+      document.getElementById('btn-next').disabled = currentIndex === questions.length - 1;
+
+      renderDots();
+      renderMath();
+    }
+
+    function saveAnswer(qId, val) { userAnswers[qId] = val; renderDots(); }
+    function saveTFAnswer(qId, idx, val) {
+      if (!userAnswers[qId]) userAnswers[qId] = {};
+      userAnswers[qId][idx] = val;
+      renderDots();
+    }
+
+    function renderDots() {
+      const container = document.getElementById('pagination-dots');
+      container.innerHTML = '';
+      questions.forEach((q, idx) => {
+        const isDone = userAnswers[q.id] !== undefined && userAnswers[q.id] !== '' && (typeof userAnswers[q.id] !== 'object' || Object.keys(userAnswers[q.id]).length > 0);
+        const isCurrent = idx === currentIndex;
+        let bgClass = isCurrent ? 'bg-blue-600 text-white font-bold ring-2 ring-blue-300' : (isDone ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-700');
+        container.innerHTML += `<button onclick="goToQuestion(${idx})" class="w-8 h-8 rounded-full text-xs transition ${bgClass}">${idx + 1}</button>`;
+      });
+    }
+
+    function nextQuestion() { if (currentIndex < questions.length - 1) { currentIndex++; renderQuestion(); } }
+    function prevQuestion() { if (currentIndex > 0) { currentIndex--; renderQuestion(); } }
+    function goToQuestion(idx) { currentIndex = idx; renderQuestion(); }
+
+    async function submitExam() {
+      if (!confirm('Bạn có chắc chắn muốn NỘP BÀI không?')) return;
+
+      const payload = {
+        fullname: studentName,
+        student_id: studentId,
+        code_exam: "101",
+        answers: userAnswers,
+        submitted_at: new Date().toLocaleString()
+      };
+
+      try {
+        await fetch(SCRIPT_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        alert('NỘP BÀI THÀNH CÔNG! Kết quả của bạn đã được chuyển về hệ thống.');
+        location.reload(); // Reset lại trang sau khi nộp
+      } catch (err) {
+        alert('Lỗi kết nối khi nộp bài: ' + err.message);
+      }
+    }
+  </script>
+</body>
+</html>
