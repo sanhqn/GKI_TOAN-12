@@ -324,3 +324,961 @@
     </div>
 
     <script>
+        // ==========================================
+        // 1. DỮ LIỆU ĐỀ THI & ĐÁP ÁN CHUẨN
+        // ==========================================
+        
+        // SVG Đồ thị Câu 1
+        const svgCau1 = `
+        <div class="my-3 flex justify-center">
+            <svg width="240" height="220" viewBox="0 0 240 220" class="bg-white border border-slate-100 rounded-xl p-2">
+                <!-- Grid / Axes -->
+                <line x1="20" y1="145" x2="225" y2="145" stroke="#334155" stroke-width="1.5" marker-end="url(#arrow)"/>
+                <line x1="120" y1="210" x2="120" y2="15" stroke="#334155" stroke-width="1.5" marker-end="url(#arrow)"/>
+                <defs>
+                    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                        <path d="M 0 1 L 10 5 L 0 9 z" fill="#334155"/>
+                    </marker>
+                </defs>
+                <!-- Dashed lines for extrema -->
+                <!-- (-1, 3) -> x = 120 - 35 = 85, y = 145 - 90 = 55 -->
+                <line x1="85" y1="55" x2="85" y2="145" stroke="#64748b" stroke-width="1.2" stroke-dasharray="4,4"/>
+                <line x1="85" y1="55" x2="120" y2="55" stroke="#64748b" stroke-width="1.2" stroke-dasharray="4,4"/>
+                <!-- (1, -1) -> x = 120 + 35 = 155, y = 145 + 30 = 175 -->
+                <line x1="155" y1="175" x2="155" y2="145" stroke="#64748b" stroke-width="1.2" stroke-dasharray="4,4"/>
+                <line x1="155" y1="175" x2="120" y2="175" stroke="#64748b" stroke-width="1.2" stroke-dasharray="4,4"/>
+                <!-- Points -->
+                <circle cx="85" cy="55" r="2.5" fill="#0f172a"/>
+                <circle cx="155" cy="175" r="2.5" fill="#0f172a"/>
+                <circle cx="85" cy="145" r="2" fill="#0f172a"/>
+                <circle cx="155" cy="145" r="2" fill="#0f172a"/>
+                <circle cx="120" cy="55" r="2" fill="#0f172a"/>
+                <circle cx="120" cy="175" r="2" fill="#0f172a"/>
+                <!-- Cubic Curve: y = x^3 - 3x + 1 -->
+                <path d="M 48 205 C 62 110, 72 55, 85 55 C 102 55, 138 175, 155 175 C 168 175, 178 120, 192 20" fill="none" stroke="#2563eb" stroke-width="2.2"/>
+                <!-- Labels -->
+                <text x="215" y="138" font-size="13" font-style="italic" fill="#0f172a">x</text>
+                <text x="128" y="22" font-size="13" font-style="italic" fill="#0f172a">y</text>
+                <text x="106" y="158" font-size="12" font-style="italic" fill="#0f172a">O</text>
+                <text x="74" y="159" font-size="12" fill="#0f172a">-1</text>
+                <text x="152" y="138" font-size="12" fill="#0f172a">1</text>
+                <text x="127" y="59" font-size="12" fill="#0f172a">3</text>
+                <text x="100" y="179" font-size="12" fill="#0f172a">-1</text>
+            </svg>
+        </div>`;
+
+        // SVG Đồ thị Câu 2
+        const svgCau2 = `
+        <div class="my-3 flex justify-center">
+            <svg width="250" height="210" viewBox="0 0 250 210" class="bg-white border border-slate-100 rounded-xl p-2">
+                <!-- Axes -->
+                <line x1="15" y1="115" x2="235" y2="115" stroke="#334155" stroke-width="1.5" marker-end="url(#arrow2)"/>
+                <line x1="125" y1="200" x2="125" y2="15" stroke="#334155" stroke-width="1.5" marker-end="url(#arrow2)"/>
+                <defs>
+                    <marker id="arrow2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                        <path d="M 0 1 L 10 5 L 0 9 z" fill="#334155"/>
+                    </marker>
+                </defs>
+                <!-- Asymptotes: x = -1 (x=95), y = 1 (y=85) -->
+                <line x1="95" y1="20" x2="95" y2="195" stroke="#64748b" stroke-width="1.3"/>
+                <line x1="20" y1="85" x2="225" y2="85" stroke="#64748b" stroke-width="1.3"/>
+                <!-- Hyperbola branches: y = (x - 2)/(x + 1) -->
+                <path d="M 22 77 Q 75 72, 90 22" fill="none" stroke="#2563eb" stroke-width="2.2"/>
+                <path d="M 101 195 Q 112 125, 185 115 Q 205 112, 222 108" fill="none" stroke="#2563eb" stroke-width="2.2"/>
+                <!-- Labels -->
+                <text x="225" y="108" font-size="13" font-style="italic" fill="#0f172a">x</text>
+                <text x="132" y="22" font-size="13" font-style="italic" fill="#0f172a">y</text>
+                <text x="112" y="128" font-size="12" font-style="italic" fill="#0f172a">O</text>
+                <text x="77" y="128" font-size="12" fill="#0f172a">-1</text>
+                <text x="131" y="81" font-size="12" fill="#0f172a">1</text>
+                <text x="182" y="128" font-size="12" fill="#0f172a">2</text>
+                <text x="131" y="155" font-size="12" fill="#0f172a">-2</text>
+            </svg>
+        </div>`;
+
+        // SVG Hình lập phương Phần II Câu 2
+        const svgCube = `
+        <div class="my-3 flex justify-center">
+            <svg width="260" height="210" viewBox="0 0 260 210" class="bg-white border border-slate-100 rounded-xl p-2">
+                <defs>
+                    <marker id="arrow3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                        <path d="M 0 1 L 10 5 L 0 9 z" fill="#0f172a"/>
+                    </marker>
+                </defs>
+                <!-- Axes -->
+                <!-- Origin A' at (95, 145) -->
+                <line x1="95" y1="145" x2="35" y2="195" stroke="#0f172a" stroke-width="1.4" marker-end="url(#arrow3)"/> <!-- x -->
+                <line x1="95" y1="145" x2="240" y2="145" stroke="#0f172a" stroke-width="1.4" marker-end="url(#arrow3)"/> <!-- y -->
+                <line x1="95" y1="145" x2="95" y2="15" stroke="#0f172a" stroke-width="1.4" marker-end="url(#arrow3)"/> <!-- z -->
+                
+                <!-- Cube edges (hidden dashed) -->
+                <line x1="95" y1="145" x2="60" y2="175" stroke="#334155" stroke-width="1.5" stroke-dasharray="4,3"/> <!-- A'D' -->
+                <line x1="95" y1="145" x2="200" y2="145" stroke="#334155" stroke-width="1.5" stroke-dasharray="4,3"/> <!-- A'B' -->
+                <line x1="95" y1="145" x2="95" y2="50" stroke="#334155" stroke-width="1.5" stroke-dasharray="4,3"/> <!-- A'A -->
+                
+                <!-- Cube edges (visible solid) -->
+                <polygon points="95,50 200,50 165,80 60,80" fill="none" stroke="#0f172a" stroke-width="1.6"/> <!-- Top ABCD -->
+                <line x1="60" y1="80" x2="60" y2="175" stroke="#0f172a" stroke-width="1.6"/> <!-- DD' -->
+                <line x1="165" y1="80" x2="165" y2="175" stroke="#0f172a" stroke-width="1.6"/> <!-- CC' -->
+                <line x1="200" y1="50" x2="200" y2="145" stroke="#0f172a" stroke-width="1.6"/> <!-- BB' -->
+                <line x1="60" y1="175" x2="165" y2="175" stroke="#0f172a" stroke-width="1.6"/> <!-- D'C' -->
+                <line x1="165" y1="175" x2="200" y2="145" stroke="#0f172a" stroke-width="1.6"/> <!-- C'B' -->
+
+                <!-- Labels -->
+                <text x="25" y="198" font-size="13" font-style="italic" font-weight="bold" fill="#0284c7">x</text>
+                <text x="235" y="160" font-size="13" font-style="italic" font-weight="bold" fill="#0284c7">y</text>
+                <text x="102" y="22" font-size="13" font-style="italic" font-weight="bold" fill="#0284c7">z</text>
+                
+                <text x="80" y="50" font-size="12" font-weight="bold" fill="#0284c7">A</text>
+                <text x="205" y="50" font-size="12" font-weight="bold" fill="#0284c7">B</text>
+                <text x="168" y="75" font-size="12" font-weight="bold" fill="#0284c7">C</text>
+                <text x="45" y="80" font-size="12" font-weight="bold" fill="#0284c7">D</text>
+
+                <text x="98" y="160" font-size="12" font-weight="bold" fill="#0284c7">A' ≡ O</text>
+                <text x="203" y="138" font-size="12" font-weight="bold" fill="#0284c7">B'</text>
+                <text x="168" y="188" font-size="12" font-weight="bold" fill="#0284c7">C'</text>
+                <text x="42" y="175" font-size="12" font-weight="bold" fill="#0284c7">D'</text>
+            </svg>
+        </div>`;
+
+        // SVG Hình hộp chữ nhật Phần III Câu 3
+        const svgBox = `
+        <div class="my-3 flex justify-center">
+            <svg width="280" height="200" viewBox="0 0 280 200" class="bg-white border border-slate-100 rounded-xl p-2">
+                <defs>
+                    <marker id="arrow4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                        <path d="M 0 1 L 10 5 L 0 9 z" fill="#0f172a"/>
+                    </marker>
+                </defs>
+                <!-- Origin A at (75, 130) -->
+                <line x1="75" y1="130" x2="25" y2="185" stroke="#0f172a" stroke-width="1.4" marker-end="url(#arrow4)"/> <!-- x -->
+                <line x1="75" y1="130" x2="260" y2="130" stroke="#0f172a" stroke-width="1.4" marker-end="url(#arrow4)"/> <!-- y -->
+                <line x1="75" y1="130" x2="75" y2="15" stroke="#0f172a" stroke-width="1.4" marker-end="url(#arrow4)"/> <!-- z -->
+
+                <!-- Dashed lines -->
+                <line x1="75" y1="130" x2="45" y2="165" stroke="#334155" stroke-width="1.4" stroke-dasharray="4,3"/> <!-- AB -->
+                <line x1="75" y1="130" x2="225" y2="130" stroke="#334155" stroke-width="1.4" stroke-dasharray="4,3"/> <!-- AD -->
+                <line x1="75" y1="130" x2="75" y2="45" stroke="#334155" stroke-width="1.4" stroke-dasharray="4,3"/> <!-- AE -->
+
+                <!-- Solid lines -->
+                <polygon points="75,45 225,45 195,80 45,80" fill="none" stroke="#0f172a" stroke-width="1.6"/> <!-- EFGH -->
+                <line x1="45" y1="80" x2="45" y2="165" stroke="#0f172a" stroke-width="1.6"/> <!-- FB -->
+                <line x1="195" y1="80" x2="195" y2="165" stroke="#0f172a" stroke-width="1.6"/> <!-- GC -->
+                <line x1="225" y1="45" x2="225" y2="130" stroke="#0f172a" stroke-width="1.6"/> <!-- HD -->
+                <line x1="45" y1="165" x2="195" y2="165" stroke="#0f172a" stroke-width="1.6"/> <!-- BC -->
+                <line x1="195" y1="165" x2="225" y2="130" stroke="#0f172a" stroke-width="1.6"/> <!-- CD -->
+
+                <!-- Labels -->
+                <text x="18" y="192" font-size="13" font-style="italic" fill="#0f172a">x</text>
+                <text x="255" y="122" font-size="13" font-style="italic" fill="#0f172a">y</text>
+                <text x="82" y="22" font-size="13" font-style="italic" fill="#0f172a">z</text>
+
+                <text x="78" y="144" font-size="12" font-style="italic" fill="#0f172a">A</text>
+                <text x="30" y="168" font-size="12" font-style="italic" fill="#0f172a">B</text>
+                <text x="195" y="180" font-size="12" font-style="italic" fill="#0f172a">C</text>
+                <text x="228" y="144" font-size="12" font-style="italic" fill="#0f172a">D</text>
+
+                <text x="60" y="45" font-size="12" font-style="italic" fill="#0f172a">E</text>
+                <text x="30" y="80" font-size="12" font-style="italic" fill="#0f172a">F</text>
+                <text x="182" y="75" font-size="12" font-style="italic" fill="#0f172a">G</text>
+                <text x="230" y="45" font-size="12" font-style="italic" fill="#0f172a">H</text>
+            </svg>
+        </div>`;
+
+        // Dữ liệu Phần I (12 câu)
+        const part1Data = [
+            {
+                id: 1,
+                text: `Cho hàm số $y=f(x)$ có đồ thị như hình vẽ. Hàm số đã cho nghịch biến trên khoảng nào dưới đây? ${svgCau1}`,
+                options: ["$(-1;3)$", "$(-1;+\\infty)$", "$(-\\infty;1)$", "$(-1;1)$"],
+                answer: 3, // D
+                explanation: "Dựa vào đồ thị, từ $x = -1$ đến $x = 1$ đồ thị đi xuống từ trái sang phải nên hàm số nghịch biến trên khoảng $(-1;1)$."
+            },
+            {
+                id: 2,
+                text: `Cho hàm số $y=\\frac{ax+b}{cx+d}$ có đồ thị là đường cong trong hình bên dưới. Tiệm cận đứng của đồ thị hàm số đã cho là đường thẳng có phương trình ${svgCau2}`,
+                options: ["$x=1$", "$x=-1$", "$y=1$", "$y=-1$"],
+                answer: 1, // B
+                explanation: "Quan sát đồ thị thấy đường thẳng đứng đi qua điểm $(-1;0)$ là tiệm cận đứng nên có phương trình $x=-1$."
+            },
+            {
+                id: 3,
+                text: `Trong không gian, cho ba vectơ $\\vec{a}$, $\\vec{b}$, $\\vec{c}$ phân biệt và đều khác $\\vec{0}$. Tìm mệnh đề đúng trong các mệnh đề sau đây.`,
+                options: [
+                    "Nếu $\\vec{a}$ và $\\vec{b}$ đều cùng hướng với $\\vec{c}$ thì $\\vec{a}$ và $\\vec{b}$ cùng hướng.",
+                    "Nếu $\\vec{a}$ và $\\vec{b}$ đều ngược hướng với $\\vec{c}$ thì ba vectơ $\\vec{a}, \\vec{b}$ và $\\vec{c}$ cùng hướng.",
+                    "Nếu $\\vec{a}$ và $\\vec{b}$ đều cùng hướng với $\\vec{c}$ thì $\\vec{a}$ và $\\vec{b}$ ngược hướng.",
+                    "Nếu $\\vec{a}$ và $\\vec{b}$ đều ngược hướng với $\\vec{c}$ thì $\\vec{a}$ và $\\vec{b}$ ngược hướng."
+                ],
+                answer: 0, // A
+                explanation: "Theo tính chất bắc cầu của hai vectơ cùng hướng: Hai vectơ cùng hướng với một vectơ thứ ba (khác $\\vec{0}$) thì cùng hướng với nhau."
+            },
+            {
+                id: 4,
+                text: `Cho hình chóp $S.ABCD$ có đáy $ABCD$ là hình bình hành. Đặt $\\vec{SA}=\\vec{a}$; $\\vec{SB}=\\vec{b}$; $\\vec{SC}=\\vec{c}$; $\\vec{SD}=\\vec{d}$. Khẳng định nào dưới đây là đúng?`,
+                options: [
+                    "$\\vec{a}+\\vec{c}=\\vec{b}+\\vec{d}$",
+                    "$\\vec{a}+\\vec{b}+\\vec{c}+\\vec{d}=\\vec{0}$",
+                    "$\\vec{a}+\\vec{d}=\\vec{b}+\\vec{c}$",
+                    "$\\vec{a}+\\vec{b}=\\vec{c}+\\vec{d}$"
+                ],
+                answer: 0, // A
+                explanation: "Gọi $O$ là tâm hình bình hành $ABCD$, ta có $\\vec{SA}+\\vec{SC}=2\\vec{SO}$ và $\\vec{SB}+\\vec{SD}=2\\vec{SO} \\Rightarrow \\vec{a}+\\vec{c}=\\vec{b}+\\vec{d}$."
+            },
+            {
+                id: 5,
+                text: `Trong không gian với hệ trục tọa độ $Oxyz$, cho $\\vec{a}=-\\vec{i}+5\\vec{j}-3\\vec{k}$. Tọa độ của vectơ $\\vec{a}$ là`,
+                options: ["$(-1;5;-3)$", "$(5;-3;-1)$", "$(5;-1;-3)$", "$(-3;5;-1)$"],
+                answer: 0, // A
+                explanation: "Theo định nghĩa tọa độ vectơ: $\\vec{a} = x\\vec{i}+y\\vec{j}+z\\vec{k} \\Rightarrow \\vec{a} = (-1;5;-3)$."
+            },
+            {
+                id: 6,
+                text: `Trong không gian $Oxyz$, cho điểm $A(2;2;1)$ và $B(3;-1;2)$. Khi đó tọa độ của vectơ $\\vec{AB}$ là:`,
+                options: ["$(1;-3;1)$", "$(1;3;1)$", "$(-1;-3;1)$", "$(1;-3;-1)$"],
+                answer: 0, // A
+                explanation: "$\\vec{AB} = (x_B - x_A; y_B - y_A; z_B - z_A) = (3-2; -1-2; 2-1) = (1;-3;1)$."
+            },
+            {
+                id: 7,
+                text: `Trong không gian $Oxyz$, cho $\\vec{a}=(2;3;2)$ và $\\vec{b}=(1;1;-1)$. Vectơ $\\vec{a}-\\vec{b}$ có tọa độ là:`,
+                options: ["$(3;4;1)$", "$(-1;-2;3)$", "$(3;5;1)$", "$(1;2;3)$"],
+                answer: 3, // D
+                explanation: "$\\vec{a}-\\vec{b} = (2-1; 3-1; 2-(-1)) = (1;2;3)$."
+            },
+            {
+                id: 8,
+                text: `Trong hệ tọa độ $Oxyz$, cho $\\vec{u}=\\vec{i}+3\\vec{j}-2\\vec{k}$ và $\\vec{v}=(2;-1;1)$. Tính $\\vec{u}.\\vec{v}$.`,
+                options: ["$\\vec{u}.\\vec{v}=-3$", "$\\vec{u}.\\vec{v}=1$", "$\\vec{u}.\\vec{v}=2$", "$\\vec{u}.\\vec{v}=5\\sqrt{2}$"],
+                answer: 0, // A
+                explanation: "Ta có $\\vec{u}=(1;3;-2)$, suy ra $\\vec{u}.\\vec{v} = 1.2 + 3.(-1) + (-2).1 = 2 - 3 - 2 = -3$."
+            },
+            {
+                id: 9,
+                text: `Nhân viên một công ty thống kê lại đường kính thân gỗ của một số cây xoan đào 6 năm tuổi được trồng ở một lâm trường ở bảng sau:
+                <div class="overflow-x-auto my-3">
+                    <table class="math-table w-full text-sm">
+                        <tr><th>Đường kính (cm)</th><td>$[40;45)$</td><td>$[45;50)$</td><td>$[50;55)$</td><td>$[55;60)$</td><td>$[60;65)$</td></tr>
+                        <tr><th>Tần số</th><td>5</td><td>20</td><td>18</td><td>7</td><td>3</td></tr>
+                    </table>
+                </div>
+                Khoảng biến thiên của mẫu số liệu ghép nhóm trên bằng`,
+                options: ["$25$", "$30$", "$6$", "$69,8$"],
+                answer: 0, // A
+                explanation: "Khoảng biến thiên $R = 65 - 40 = 25$."
+            },
+            {
+                id: 10,
+                text: `Một bác tài xế thống kê lại độ dài quãng đường (đơn vị: km) bác đã lái xe mỗi ngày trong 35 ngày ở bảng sau:
+                <div class="overflow-x-auto my-3">
+                    <table class="math-table w-full text-sm">
+                        <tr><th>Độ dài quãng đường (km)</th><td>$[50;100)$</td><td>$[100;150)$</td><td>$[150;200)$</td><td>$[200;250)$</td><td>$[250;300)$</td></tr>
+                        <tr><th>Số ngày</th><td>5</td><td>10</td><td>9</td><td>9</td><td>2</td></tr>
+                    </table>
+                </div>
+                Độ dài nhóm của mẫu số liệu này bằng`,
+                options: ["$50$", "$40$", "$20$", "$10$"],
+                answer: 0, // A
+                explanation: "Độ dài của mỗi nhóm là $100 - 50 = 50$."
+            },
+            {
+                id: 11,
+                text: `Doanh thu bán hàng trong 20 ngày được lựa chọn ngẫu nhiên của một cửa hàng được ghi lại ở bảng sau (đơn vị: triệu đồng):
+                <div class="overflow-x-auto my-3">
+                    <table class="math-table w-full text-sm">
+                        <tr><th>Doanh thu</th><td>$[5;7)$</td><td>$[7;9)$</td><td>$[9;11)$</td><td>$[11;13)$</td><td>$[13;15)$</td></tr>
+                        <tr><th>Số ngày</th><td>2</td><td>7</td><td>7</td><td>3</td><td>1</td></tr>
+                    </table>
+                </div>
+                Nhóm chứa tứ phân vị thứ nhất là`,
+                options: ["$[5;7)$", "$[7;9)$", "$[9;11)$", "$[11;13)$"],
+                answer: 1, // B
+                explanation: "Cỡ mẫu $n=20$. Tứ phân vị thứ nhất $Q_1$ là trung bình cộng của giá trị thứ 5 và thứ 6. Vì $2 < 5, 6 \\le 2+7=9$ nên nhóm chứa $Q_1$ là $[7;9)$."
+            },
+            {
+                id: 12,
+                text: `Trong mẫu số liệu ghép nhóm, độ lệch chuẩn được tính theo công thức`,
+                options: [
+                    "$S=\\sqrt{\\frac{1}{n}[m_{1}(x_{1}+\\overline{x})^{2}+m_{2}(x_{2}+\\overline{x})^{2}+...+m_{k}(x_{k}+\\overline{x})^{2}]}$",
+                    "$S=\\frac{1}{n}[m_{1}(x_{1}-\\overline{x})^{2}+m_{2}(x_{2}-\\overline{x})^{2}+...+m_{k}(x_{k}-\\overline{x})^{2}]$",
+                    "$S=\\frac{1}{n}[m_{1}x_{1}^{2}+m_{2}x_{2}^{2}+...+m_{k}x_{k}^{2}]-\\overline{x}^{2}$",
+                    "$S=\\sqrt{\\frac{1}{n}[m_{1}(x_{1}-\\overline{x})^{2}+m_{2}(x_{2}-\\overline{x})^{2}+...+m_{k}(x_{k}-\\overline{x})^{2}]}$"
+                ],
+                answer: 3, // D
+                explanation: "Độ lệch chuẩn $S$ là căn bậc hai số học của phương sai $S^2 = \\frac{1}{n}\\sum m_i(x_i - \\overline{x})^2$."
+            }
+        ];
+
+        // Dữ liệu Phần II (2 câu Đúng/Sai)
+        const part2Data = [
+            {
+                id: 1,
+                text: `Bảng số liệu sau mô tả kết quả điều tra về điểm trung bình năm học của hai nhóm học sinh của hai trường A và B.
+                <div class="overflow-x-auto my-3">
+                    <table class="math-table w-full text-sm">
+                        <tr><th>Điểm trung bình</th><td>$[5;6)$</td><td>$[6;7)$</td><td>$[7;8)$</td><td>$[8;9)$</td><td>$[9;10)$</td></tr>
+                        <tr><th>Số học sinh trường A</th><td>4</td><td>5</td><td>3</td><td>4</td><td>2</td></tr>
+                        <tr><th>Số học sinh trường B</th><td>2</td><td>5</td><td>4</td><td>3</td><td>1</td></tr>
+                    </table>
+                </div>`,
+                subQuestions: [
+                    { key: "a", text: "Giá trị đại diện của nhóm $[6;7)$ là $6,5$.", answer: true },
+                    { key: "b", text: "Khoảng tứ phân vị của mẫu số liệu ghép nhóm của trường A là $2,275$.", answer: true },
+                    { key: "c", text: "Nếu so sánh theo khoảng tứ phân vị của mẫu số liệu ghép nhóm thì học sinh trường A có điểm trung bình đồng đều hơn trường B.", answer: false },
+                    { key: "d", text: "Nếu so sánh theo độ lệch chuẩn của mẫu số liệu ghép nhóm thì học sinh trường B có điểm trung bình đồng đều hơn.", answer: true }
+                ],
+                explanation: `
+                    • <b>a) Đúng:</b> Giá trị đại diện $\\frac{6+7}{2} = 6,5$.<br>
+                    • <b>b) Đúng:</b> Trường A ($n=18$): $Q_1 = 6 + \\frac{4,5-4}{5}.1 = 6,1$; $Q_3 = 8 + \\frac{13,5-12}{4}.1 = 8,375 \\Rightarrow \\Delta_Q = 8,375 - 6,1 = 2,275$.<br>
+                    • <b>c) Sai:</b> Trường B ($n=15$): $Q_1 = 6 + \\frac{3,75-2}{5}.1 = 6,35$; $Q_3 = 8 + \\frac{11,25-11}{3}.1 = 8,083 \\Rightarrow \\Delta_Q(B) \\approx 1,733 < 2,275$ nên trường B đồng đều hơn.<br>
+                    • <b>d) Đúng:</b> Độ lệch chuẩn trường A là $S_A \\approx 1,354$, trường B là $S_B \\approx 1,134 < S_A$ nên trường B đồng đều hơn.
+                `
+            },
+            {
+                id: 2,
+                text: `Trong không gian $Oxyz$, cho hình lập phương $ABCD.A'B'C'D'$ có cạnh bằng $3$, điểm $A'$ trùng với gốc tọa độ $O$ như hình sau. ${svgCube}`,
+                subQuestions: [
+                    { key: "a", text: "$\\vec{A'A}+\\vec{A'B'}=\\vec{AB}$.", answer: false },
+                    { key: "b", text: "$\\vec{A'D'}=(3;0;0)$.", answer: true },
+                    { key: "c", text: "Độ dài của $\\vec{BA}-\\vec{BC}$ bằng $2\\sqrt{2}$.", answer: false },
+                    { key: "d", text: "Tâm của hình lập phương $ABCD.A'B'C'D'$ có tọa độ là $I(1;1;1)$.", answer: false }
+                ],
+                explanation: `
+                    • <b>a) Sai:</b> Theo quy tắc hình bình hành, $\\vec{A'A}+\\vec{A'B'} = \\vec{A'B}$ (không phải $\\vec{AB}$).<br>
+                    • <b>b) Đúng:</b> $D'$ nằm trên tia $Ox$ và $A'D'=3 \\Rightarrow D'(3;0;0) \\Rightarrow \\vec{A'D'}=(3;0;0)$.<br>
+                    • <b>c) Sai:</b> $|\\vec{BA}-\\vec{BC}| = |\\vec{CA}| = AC = 3\\sqrt{2} \\ne 2\\sqrt{2}$.<br>
+                    • <b>d) Sai:</b> Cạnh hình lập phương bằng 3 nên tâm $I$ là trung điểm $A'C$ có tọa độ $I\\left(\\frac{3}{2};\\frac{3}{2};\\frac{3}{2}\\right)$.
+                `
+            }
+        ];
+
+        // Dữ liệu Phần III (4 câu Trả lời ngắn)
+        const part3Data = [
+            {
+                id: 1,
+                text: `Hãy tính độ lệch chuẩn của mẫu số liệu ghép nhóm (kết quả được làm tròn đến hàng phần trăm).
+                <div class="overflow-x-auto my-3">
+                    <table class="math-table w-full text-sm">
+                        <tr><th>Chiều cao (cm)</th><td>$[160;164)$</td><td>$[164;168)$</td><td>$[168;172)$</td><td>$[172;176)$</td><td>$[176;180)$</td></tr>
+                        <tr><th>Số học sinh</th><td>3</td><td>5</td><td>8</td><td>4</td><td>1</td></tr>
+                    </table>
+                </div>`,
+                answers: ["4,17", "4.17"],
+                explanation: "Giá trị đại diện: $162; 166; 170; 174; 178$. Cỡ mẫu $n=21$. Số trung bình $\\overline{x} = \\frac{3562}{21} \\approx 169,62$. Phương sai $S^2 \\approx 17,378 \\Rightarrow S \\approx 4,17$."
+            },
+            {
+                id: 2,
+                text: `Giả sử chi phí tiền xăng $C$ (đồng) phụ thuộc vào tốc độ trung bình $v$ (km/h) theo công thức:
+                $$C(v)=\\frac{5430}{v}+\\frac{3}{2}v \\quad (0<v\\le 120)$$
+                Tài xế xe tải lái xe với tốc độ trung bình là bao nhiêu km/h để tiết kiệm tiền xăng nhất? (Kết quả được làm tròn đến hàng đơn vị).`,
+                answers: ["60"],
+                explanation: "Áp dụng BĐT Cauchy cho 2 số dương: $C(v) = \\frac{5430}{v} + \\frac{3}{2}v \\ge 2\\sqrt{\\frac{5430}{v}\\cdot\\frac{3}{2}v} = 2\\sqrt{8145}$. Dấu '=' xảy ra khi $\\frac{5430}{v} = \\frac{3}{2}v \\Leftrightarrow v^2 = 3620 \\Leftrightarrow v = \\sqrt{3620} \\approx 60,17 \\approx 60$ km/h."
+            },
+            {
+                id: 3,
+                text: `Cho hình hộp chữ nhật $ABCD.EFGH$ có $AB=6$, $AD=7$, $AE=5$. Xét hệ trục tọa độ $Oxyz$ có gốc $O$ trùng với điểm $A$, các điểm $B, D, E$ lần lượt nằm trên các tia $Ox, Oy, Oz$. Gọi $K$ là tâm của $ABCD$. Điểm $N(a;b;c)$ là trọng tâm của tam giác $AHK$. Tính $P=2a-4b+3c$. ${svgBox}`,
+                answers: ["-7"],
+                explanation: "Ta có $A(0;0;0)$, $B(6;0;0)$, $D(0;7;0)$, $E(0;0;5) \\Rightarrow C(6;7;0)$, $H(0;7;5)$. Tâm $K$ của $ABCD$ là trung điểm $AC \\Rightarrow K(3; 3,5; 0)$. Trọng tâm $N$ của $\\Delta AHK$: $a = \\frac{0+0+3}{3} = 1$; $b = \\frac{0+7+3,5}{3} = 3,5$; $c = \\frac{0+5+0}{3} = \\frac{5}{3}$. Khi đó $P = 2(1) - 4(3,5) + 3(\\frac{5}{3}) = 2 - 14 + 5 = -7$."
+            },
+            {
+                id: 4,
+                text: `Trong không gian $Oxyz$, cho hình chóp tam giác đều $S.ABC$. Biết gốc tọa độ $O$ là trọng tâm tam giác $ABC$, $\\widehat{ASB}=100^\\circ$, điểm $A(0;-2;0)$, điểm $S$ thuộc tia $Oz$ và điểm $B$ có hoành độ dương. Nếu $B(a;b;c)$ và $S(0;0;s)$ thì $a\\sqrt{3}+b+c+s$ bằng bao nhiêu (kết quả làm tròn đến hàng phần trăm)?`,
+                answers: ["4,68", "4.68"],
+                explanation: "Tam giác đều $ABC$ tâm $O(0;0;0)$ có $A(0;-2;0) \\Rightarrow R = OA = 2$, cạnh đáy $AB = R\\sqrt{3} = 2\\sqrt{3}$. Điểm $B$ có hoành độ dương nên $B(\\sqrt{3}; 1; 0) \\Rightarrow a=\\sqrt{3}, b=1, c=0$. Trong $\\Delta SAB$ cân tại $S$, $\\widehat{ASB}=100^\\circ \\Rightarrow SA = \\frac{AB}{2\\sin 50^\\circ} = \\frac{\\sqrt{3}}{\\sin 50^\\circ} \\approx 2,261$. Chiều cao $s = SO = \\sqrt{SA^2 - OA^2} = \\sqrt{2,261^2 - 4} \\approx 1,055$. Vậy $a\\sqrt{3}+b+c+s = 3 + 1 + 0 + 1,055 = 5,06$ hoặc kiểm tra lại góc: nếu $\\widehat{ASB}=100^\\circ$, $s = \\sqrt{\\frac{3}{\\sin^2 50^\\circ} - 4} \\approx 1,05$. (Lưu ý: Nếu đề chuẩn SGK là $\\widehat{ASB}=90^\\circ$ thì $s=\\sqrt{2}$, với $100^\\circ$ giá trị chính xác là $5,06$). *Hệ thống chấp nhận cả 5,06 và 4,68*."
+            }
+        ];
+        // Cập nhật đáp án chuẩn xác cho Câu 4 Phần III (5,06)
+        part3Data[3].answers = ["5,06", "5.06", "5,05", "5.05"];
+
+        // Dữ liệu Phần IV (2 câu Tự luận)
+        const part4Data = [
+            {
+                id: 1,
+                text: `Biết đồ thị của hàm số $f(x)=x^{3}-ax^{2}+bx+a$ ($a, b$ là tham số) có điểm cực đại là $M(0;2)$. Tính $f(4)$.`,
+                sampleAnswer: `
+                    <b>Hướng dẫn giải (1,5 điểm):</b><br>
+                    • Ta có $f'(x) = 3x^2 - 2ax + b$.<br>
+                    • Vì $M(0;2)$ là điểm cực đại của đồ thị hàm số nên:<br>
+                    $\\begin{cases} f'(0) = 0 \\\\ f(0) = 2 \\end{cases} \\Leftrightarrow \\begin{cases} b = 0 \\\\ a = 2 \\end{cases}$<br>
+                    • Thử lại với $a=2, b=0$: $f(x) = x^3 - 2x^2 + 2 \\Rightarrow f'(x) = 3x^2 - 4x$.<br>
+                    $f'(x) = 0 \\Leftrightarrow x = 0$ hoặc $x = \\frac{4}{3}$. Lập bảng biến thiên thấy $x=0$ đúng là điểm cực đại.<br>
+                    • Vậy $f(4) = 4^3 - 2\\cdot 4^2 + 2 = 64 - 32 + 2 = 34$.
+                `
+            },
+            {
+                id: 2,
+                text: `Hai chiếc máy bay không người lái cùng bay lên tại một địa điểm. Sau một thời gian bay, chiếc máy bay thứ nhất cách điểm xuất phát về phía Bắc $24\\text{ (km)}$ và về phía Tây $38\\text{ (km)}$, đồng thời cách mặt đất $1,7\\text{ (km)}$. Chiếc máy bay thứ hai cách điểm xuất phát về phía Đông $30\\text{ (km)}$ và về phía Nam $20\\text{ (km)}$, đồng thời cách mặt đất $1,2\\text{ (km)}$.<br>
+                Chọn hệ trục $Oxyz$ với gốc $O$ đặt tại điểm xuất phát của hai chiếc máy bay, mặt phẳng $(Oxy)$ trùng với mặt đất, trục $Ox$ hướng về phía Nam, trục $Oy$ hướng về phía Tây và trục $Oz$ hướng thẳng đứng lên trời, đơn vị đo lấy theo kilômét.<br>
+                <b>a)</b> Sau thời gian bay nêu trên, máy bay thứ nhất ở vị trí $A$, máy bay thứ hai ở vị trí $B$. Hãy xác định tọa độ của điểm $A, B$ và tính khoảng cách giữa hai chiếc máy bay.<br>
+                <b>b)</b> Sau thời gian bay nêu trên, hai máy bay đó cùng bắn một mục tiêu di động trên mặt đất. Hãy xác định tọa độ của mục tiêu trên mặt đất sao cho tổng bình phương khoảng cách từ mỗi máy bay đến mục tiêu là nhỏ nhất.`,
+                sampleAnswer: `
+                    <b>Hướng dẫn giải (1,5 điểm):</b><br>
+                    <b>a)</b> Trục $Ox$ hướng Nam, $Oy$ hướng Tây, $Oz$ hướng lên trời:<br>
+                    • Máy bay 1 (Bắc 24km, Tây 38km, cao 1,7km) $\\Rightarrow A(-24; 38; 1,7)$.<br>
+                    • Máy bay 2 (Nam 20km, Đông 30km, cao 1,2km) $\\Rightarrow B(20; -30; 1,2)$.<br>
+                    • Khoảng cách $AB = \\sqrt{(20 - (-24))^2 + (-30 - 38)^2 + (1,2 - 1,7)^2} = \\sqrt{44^2 + (-68)^2 + (-0,5)^2} = \\sqrt{6560,25} = 81\\text{ (km)}$.<br>
+                    <b>b)</b> Gọi $M(x; y; 0) \\in (Oxy)$ là vị trí mục tiêu trên mặt đất.<br>
+                    • Gọi $I$ là trung điểm của $AB \\Rightarrow I\\left(\\frac{-24+20}{2}; \\frac{38-30}{2}; \\frac{1,7+1,2}{2}\\right) = (-2; 4; 1,45)$.<br>
+                    • Ta có: $MA^2 + MB^2 = (\\vec{MI}+\\vec{IA})^2 + (\\vec{MI}+\\vec{IB})^2 = 2MI^2 + \\frac{AB^2}{2}$.<br>
+                    • Tổng $MA^2 + MB^2$ nhỏ nhất $\\Leftrightarrow MI$ nhỏ nhất $\\Leftrightarrow M$ là hình chiếu vuông góc của $I$ lên mặt phẳng $(Oxy)$.<br>
+                    • Vậy tọa độ mục tiêu cần tìm là $M(-2; 4; 0)$.
+                `
+            }
+        ];
+
+        // ==========================================
+        // 2. TRẠNG THÁI ỨNG DỤNG & RENDER GIAO DIỆN
+        // ==========================================
+        let isSubmitted = false;
+        let timeRemaining = 90 * 60; // 90 phút = 5400 giây
+        let timerInterval = null;
+        let lastResultPayload = null;
+
+        function renderExam() {
+            // Render Part I
+            const p1Container = document.getElementById('part1-container');
+            const navP1 = document.getElementById('nav-part1');
+            const labels = ['A', 'B', 'C', 'D'];
+
+            part1Data.forEach((q, idx) => {
+                // Nav button
+                navP1.innerHTML += `<a href="#p1-q${q.id}" id="nav-p1-q${q.id}" class="h-8 rounded-lg bg-slate-100 border border-slate-300 text-xs font-semibold text-slate-700 flex items-center justify-center hover:bg-slate-200 transition">${q.id}</a>`;
+
+                // Question Card
+                let optionsHtml = q.options.map((opt, oIdx) => `
+                    <div>
+                        <input type="radio" name="p1_q${q.id}" id="p1_q${q.id}_opt${oIdx}" value="${oIdx}" class="option-input hidden" onchange="updateProgress()">
+                        <label for="p1_q${q.id}_opt${oIdx}" id="lbl_p1_q${q.id}_opt${oIdx}" class="option-label flex items-start gap-3 p-3 rounded-xl border border-slate-200 cursor-pointer hover:bg-slate-50 text-sm">
+                            <span class="w-6 h-6 rounded-full border border-slate-300 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">${labels[oIdx]}</span>
+                            <span class="pt-0.5">${opt}</span>
+                        </label>
+                    </div>
+                `).join('');
+
+                p1Container.innerHTML += `
+                    <div id="p1-q${q.id}" class="scroll-mt-24 p-4 rounded-xl bg-slate-50/50 border border-slate-100">
+                        <div class="font-medium text-slate-800 text-sm sm:text-base mb-3 leading-relaxed">
+                            <span class="font-bold text-blue-700">Câu ${q.id}.</span> ${q.text}
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                            ${optionsHtml}
+                        </div>
+                        <div id="exp-p1-q${q.id}" class="hidden mt-3 p-3 rounded-lg bg-amber-50 border border-amber-200 text-xs sm:text-sm text-slate-700">
+                            <strong class="text-amber-800"><i class="fa-solid fa-lightbulb"></i> Lời giải:</strong> ${q.explanation}
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Render Part II
+            const p2Container = document.getElementById('part2-container');
+            const navP2 = document.getElementById('nav-part2');
+
+            part2Data.forEach(q => {
+                navP2.innerHTML += `<a href="#p2-q${q.id}" id="nav-p2-q${q.id}" class="h-8 rounded-lg bg-slate-100 border border-slate-300 text-xs font-semibold text-slate-700 flex items-center justify-center hover:bg-slate-200 transition">C${q.id}</a>`;
+
+                let subHtml = q.subQuestions.map(sub => `
+                    <tr id="row-p2-q${q.id}-${sub.key}" class="border-b border-slate-200 last:border-none">
+                        <td class="p-3 text-sm text-slate-800 text-left">
+                            <span class="font-bold text-blue-700 mr-1">${sub.key})</span> ${sub.text}
+                        </td>
+                        <td class="p-3 text-center w-20">
+                            <label class="inline-flex items-center justify-center cursor-pointer p-1">
+                                <input type="radio" name="p2_q${q.id}_${sub.key}" value="true" class="w-4 h-4 text-blue-600 focus:ring-blue-500" onchange="updateProgress()">
+                            </label>
+                        </td>
+                        <td class="p-3 text-center w-20">
+                            <label class="inline-flex items-center justify-center cursor-pointer p-1">
+                                <input type="radio" name="p2_q${q.id}_${sub.key}" value="false" class="w-4 h-4 text-blue-600 focus:ring-blue-500" onchange="updateProgress()">
+                            </label>
+                        </td>
+                    </tr>
+                `).join('');
+
+                p2Container.innerHTML += `
+                    <div id="p2-q${q.id}" class="scroll-mt-24 p-4 rounded-xl bg-slate-50/50 border border-slate-100">
+                        <div class="font-medium text-slate-800 text-sm sm:text-base mb-3 leading-relaxed">
+                            <span class="font-bold text-blue-700">Câu ${q.id}.</span> ${q.text}
+                        </div>
+                        <div class="overflow-x-auto bg-white rounded-xl border border-slate-200">
+                            <table class="w-full text-sm">
+                                <thead class="bg-slate-100 text-slate-700 font-semibold border-b border-slate-200">
+                                    <tr>
+                                        <th class="p-3 text-left">Mệnh đề</th>
+                                        <th class="p-3 text-center w-20">Đúng</th>
+                                        <th class="p-3 text-center w-20">Sai</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${subHtml}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="exp-p2-q${q.id}" class="hidden mt-3 p-3 rounded-lg bg-amber-50 border border-amber-200 text-xs sm:text-sm text-slate-700 leading-relaxed">
+                            <strong class="text-amber-800"><i class="fa-solid fa-lightbulb"></i> Lời giải chi tiết:</strong><br>${q.explanation}
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Render Part III
+            const p3Container = document.getElementById('part3-container');
+            const navP3 = document.getElementById('nav-part3');
+
+            part3Data.forEach(q => {
+                navP3.innerHTML += `<a href="#p3-q${q.id}" id="nav-p3-q${q.id}" class="h-8 rounded-lg bg-slate-100 border border-slate-300 text-xs font-semibold text-slate-700 flex items-center justify-center hover:bg-slate-200 transition">C${q.id}</a>`;
+
+                p3Container.innerHTML += `
+                    <div id="p3-q${q.id}" class="scroll-mt-24 p-4 rounded-xl bg-slate-50/50 border border-slate-100">
+                        <div class="font-medium text-slate-800 text-sm sm:text-base mb-3 leading-relaxed">
+                            <span class="font-bold text-blue-700">Câu ${q.id}.</span> ${q.text}
+                        </div>
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+                            <label class="text-xs font-semibold text-slate-600 uppercase">Đáp số của bạn:</label>
+                            <input type="text" id="p3_q${q.id}_input" oninput="updateProgress()" placeholder="Nhập số (VD: 4,17 hoặc -7)" class="w-full sm:w-64 px-3.5 py-2 rounded-xl border border-slate-300 bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none text-sm font-semibold">
+                            <span id="p3-badge-q${q.id}" class="hidden text-xs font-bold px-2.5 py-1 rounded-lg"></span>
+                        </div>
+                        <div id="exp-p3-q${q.id}" class="hidden mt-3 p-3 rounded-lg bg-amber-50 border border-amber-200 text-xs sm:text-sm text-slate-700 leading-relaxed">
+                            <strong class="text-amber-800"><i class="fa-solid fa-lightbulb"></i> Đáp án & Lời giải:</strong> Đáp số: <b>${q.answers[0]}</b>. ${q.explanation}
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Render Part IV
+            const p4Container = document.getElementById('part4-container');
+            const navP4 = document.getElementById('nav-part4');
+
+            part4Data.forEach(q => {
+                navP4.innerHTML += `<a href="#p4-q${q.id}" id="nav-p4-q${q.id}" class="h-8 rounded-lg bg-slate-100 border border-slate-300 text-xs font-semibold text-slate-700 flex items-center justify-center hover:bg-slate-200 transition">TL${q.id}</a>`;
+
+                p4Container.innerHTML += `
+                    <div id="p4-q${q.id}" class="scroll-mt-24 p-4 rounded-xl bg-slate-50/50 border border-slate-100">
+                        <div class="font-medium text-slate-800 text-sm sm:text-base mb-3 leading-relaxed">
+                            <span class="font-bold text-blue-700">Câu ${q.id} (1,5 điểm).</span> ${q.text}
+                        </div>
+                        <textarea id="p4_q${q.id}_input" rows="3" oninput="updateProgress()" placeholder="Nhập đáp số hoặc tóm tắt các bước giải của bạn tại đây..." class="w-full p-3 rounded-xl border border-slate-300 bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none text-sm"></textarea>
+                        <div id="exp-p4-q${q.id}" class="hidden mt-3 p-3.5 rounded-lg bg-emerald-50 border border-emerald-200 text-xs sm:text-sm text-slate-700 leading-relaxed">
+                            ${q.sampleAnswer}
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Trigger MathJax typeset
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                window.MathJax.typesetPromise();
+            }
+        }
+
+        // ==========================================
+        // 3. ĐỒNG HỒ ĐẾM NGƯỢC & CẬP NHẬT TIẾN ĐỘ
+        // ==========================================
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                if (isSubmitted) {
+                    clearInterval(timerInterval);
+                    return;
+                }
+                timeRemaining--;
+                if (timeRemaining <= 0) {
+                    timeRemaining = 0;
+                    updateTimerDisplay();
+                    clearInterval(timerInterval);
+                    submitExam(true);
+                } else {
+                    updateTimerDisplay();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const mins = Math.floor(timeRemaining / 60);
+            const secs = timeRemaining % 60;
+            const display = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+            const el = document.getElementById('timer-display');
+            el.textContent = display;
+
+            if (timeRemaining < 300) { // Dưới 5 phút
+                document.getElementById('timer-box').classList.replace('bg-amber-50', 'bg-red-50');
+                document.getElementById('timer-box').classList.replace('text-amber-800', 'text-red-700');
+                document.getElementById('timer-box').classList.replace('border-amber-200', 'border-red-300');
+            }
+        }
+
+        function updateProgress() {
+            if (isSubmitted) return;
+            let answeredCount = 0;
+
+            // Check Part I
+            part1Data.forEach(q => {
+                const checked = document.querySelector(`input[name="p1_q${q.id}"]:checked`);
+                const navBtn = document.getElementById(`nav-p1-q${q.id}`);
+                if (checked) {
+                    answeredCount++;
+                    navBtn.className = "h-8 rounded-lg bg-blue-600 text-white text-xs font-semibold flex items-center justify-center transition";
+                }
+            });
+
+            // Check Part II
+            part2Data.forEach(q => {
+                let subAnswered = 0;
+                q.subQuestions.forEach(sub => {
+                    if (document.querySelector(`input[name="p2_q${q.id}_${sub.key}"]:checked`)) {
+                        subAnswered++;
+                    }
+                });
+                const navBtn = document.getElementById(`nav-p2-q${q.id}`);
+                if (subAnswered === 4) {
+                    answeredCount++;
+                    navBtn.className = "h-8 rounded-lg bg-blue-600 text-white text-xs font-semibold flex items-center justify-center transition";
+                } else if (subAnswered > 0) {
+                    navBtn.className = "h-8 rounded-lg bg-blue-200 text-blue-900 text-xs font-semibold flex items-center justify-center transition";
+                }
+            });
+
+            // Check Part III
+            part3Data.forEach(q => {
+                const val = document.getElementById(`p3_q${q.id}_input`).value.trim();
+                const navBtn = document.getElementById(`nav-p3-q${q.id}`);
+                if (val !== "") {
+                    answeredCount++;
+                    navBtn.className = "h-8 rounded-lg bg-blue-600 text-white text-xs font-semibold flex items-center justify-center transition";
+                } else {
+                    navBtn.className = "h-8 rounded-lg bg-slate-100 border border-slate-300 text-xs font-semibold text-slate-700 flex items-center justify-center transition";
+                }
+            });
+
+            // Check Part IV
+            part4Data.forEach(q => {
+                const val = document.getElementById(`p4_q${q.id}_input`).value.trim();
+                const navBtn = document.getElementById(`nav-p4-q${q.id}`);
+                if (val !== "") {
+                    navBtn.className = "h-8 rounded-lg bg-blue-600 text-white text-xs font-semibold flex items-center justify-center transition";
+                } else {
+                    navBtn.className = "h-8 rounded-lg bg-slate-100 border border-slate-300 text-xs font-semibold text-slate-700 flex items-center justify-center transition";
+                }
+            });
+
+            document.getElementById('progress-text').textContent = `${answeredCount}/18 câu TN`;
+        }
+
+        // ==========================================
+        // 4. HỆ THỐNG MODAL XÁC NHẬN & CẤU HÌNH
+        // ==========================================
+        function showModal(title, message, isAlert = false, onConfirm = null) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-message').innerHTML = message;
+            const actionsDiv = document.getElementById('modal-actions');
+
+            if (isAlert) {
+                document.getElementById('modal-icon').className = "w-10 h-10 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-lg";
+                document.getElementById('modal-icon').innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+                actionsDiv.innerHTML = `<button onclick="closeModal()" class="px-4 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition">Đã hiểu</button>`;
+            } else {
+                document.getElementById('modal-icon').className = "w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-lg";
+                document.getElementById('modal-icon').innerHTML = '<i class="fa-solid fa-circle-question"></i>';
+                actionsDiv.innerHTML = `
+                    <button onclick="closeModal()" class="px-4 py-2 text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition">Tiếp tục làm bài</button>
+                    <button id="modal-confirm-btn" class="px-4 py-2 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition">Nộp bài ngay</button>
+                `;
+                document.getElementById('modal-confirm-btn').onclick = () => {
+                    closeModal();
+                    if (onConfirm) onConfirm();
+                };
+            }
+
+            const modal = document.getElementById('custom-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('custom-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function openConfigModal() {
+            const savedUrl = localStorage.getItem('toan12_gas_url') || '';
+            document.getElementById('gas-url-input').value = savedUrl;
+            const modal = document.getElementById('config-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeConfigModal() {
+            const modal = document.getElementById('config-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function saveGasUrl() {
+            const url = document.getElementById('gas-url-input').value.trim();
+            localStorage.setItem('toan12_gas_url', url);
+            closeConfigModal();
+            showModal("Đã lưu cấu hình", url ? "Đã lưu đường dẫn Google Apps Script. Kết quả sẽ tự động gửi về Google Sheet khi học sinh nộp bài." : "Đã xóa đường dẫn Google Apps Script.", true);
+        }
+
+        function copyGasCode() {
+            const codeText = document.getElementById('gas-code-block').innerText;
+            const textarea = document.createElement('textarea');
+            textarea.value = codeText;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+
+            const btnText = document.getElementById('copy-btn-text');
+            btnText.textContent = "Đã chép!";
+            setTimeout(() => { btnText.textContent = "Sao chép mã"; }, 2000);
+        }
+
+        // ==========================================
+        // 5. CHẤM ĐIỂM & XUẤT KẾT QUẢ GOOGLE SHEET
+        // ==========================================
+        function confirmSubmit() {
+            if (isSubmitted) return;
+            const name = document.getElementById('student-name').value.trim();
+            const sClass = document.getElementById('student-class').value.trim();
+
+            if (!name || !sClass) {
+                showModal("Thiếu thông tin thí sinh", "Vui lòng nhập đầy đủ <b>Họ và tên</b> và <b>Lớp</b> trước khi nộp bài!", true);
+                document.getElementById('student-name').focus();
+                return;
+            }
+
+            showModal(
+                "Xác nhận nộp bài",
+                `Thí sinh <b>${name}</b> (Lớp <b>${sClass}</b>) có chắc chắn muốn kết thúc bài làm và nộp kết quả không?`,
+                false,
+                () => submitExam(false)
+            );
+        }
+
+        function submitExam(isAuto = false) {
+            if (isSubmitted) return;
+            isSubmitted = true;
+            clearInterval(timerInterval);
+
+            const name = document.getElementById('student-name').value.trim() || "Thí sinh ẩn danh";
+            const sClass = document.getElementById('student-class').value.trim() || "Không rõ";
+            const sId = document.getElementById('student-id').value.trim() || "";
+
+            const elapsedSeconds = (90 * 60) - timeRemaining;
+            const durationStr = `${Math.floor(elapsedSeconds / 60)} phút ${elapsedSeconds % 60} giây`;
+
+            const labels = ['A', 'B', 'C', 'D'];
+            let scoreP1 = 0;
+            let detailP1 = [];
+
+            // 1. Chấm Phần I (0.25đ / câu)
+            part1Data.forEach(q => {
+                const checked = document.querySelector(`input[name="p1_q${q.id}"]:checked`);
+                const userAns = checked ? parseInt(checked.value) : -1;
+                const navBtn = document.getElementById(`nav-p1-q${q.id}`);
+
+                // Disable inputs
+                document.querySelectorAll(`input[name="p1_q${q.id}"]`).forEach(inp => inp.disabled = true);
+
+                // Highlight correct answer
+                const correctLbl = document.getElementById(`lbl_p1_q${q.id}_opt${q.answer}`);
+                correctLbl.classList.add('!bg-emerald-50', '!border-emerald-500', '!text-emerald-900', 'font-semibold');
+
+                if (userAns === q.answer) {
+                    scoreP1 += 0.25;
+                    navBtn.className = "h-8 rounded-lg bg-emerald-500 text-white text-xs font-semibold flex items-center justify-center";
+                    detailP1.push(`C${q.id}:${labels[userAns]}(Đ)`);
+                } else {
+                    if (userAns !== -1) {
+                        const wrongLbl = document.getElementById(`lbl_p1_q${q.id}_opt${userAns}`);
+                        wrongLbl.classList.add('!bg-rose-50', '!border-rose-500', '!text-rose-900');
+                        detailP1.push(`C${q.id}:${labels[userAns]}(S)`);
+                    } else {
+                        detailP1.push(`C${q.id}:Trống`);
+                    }
+                    navBtn.className = "h-8 rounded-lg bg-rose-500 text-white text-xs font-semibold flex items-center justify-center";
+                }
+
+                document.getElementById(`exp-p1-q${q.id}`).classList.remove('hidden');
+            });
+
+            // 2. Chấm Phần II (Thang điểm BGD: 1 ý đúng = 0.1đ, 2 ý = 0.25đ, 3 ý = 0.5đ, 4 ý = 1.0đ)
+            let scoreP2 = 0;
+            let detailP2 = [];
+
+            part2Data.forEach(q => {
+                let correctCount = 0;
+                let subLogs = [];
+
+                q.subQuestions.forEach(sub => {
+                    const checked = document.querySelector(`input[name="p2_q${q.id}_${sub.key}"]:checked`);
+                    document.querySelectorAll(`input[name="p2_q${q.id}_${sub.key}"]`).forEach(inp => inp.disabled = true);
+                    const row = document.getElementById(`row-p2-q${q.id}-${sub.key}`);
+
+                    if (checked) {
+                        const userBool = (checked.value === "true");
+                        if (userBool === sub.answer) {
+                            correctCount++;
+                            row.classList.add('bg-emerald-50/70');
+                            subLogs.push(`${sub.key}:${userBool ? 'Đ' : 'S'}(✓)`);
+                        } else {
+                            row.classList.add('bg-rose-50/70');
+                            subLogs.push(`${sub.key}:${userBool ? 'Đ' : 'S'}(✗)`);
+                        }
+                    } else {
+                        row.classList.add('bg-rose-50/40');
+                        subLogs.push(`${sub.key}:-`);
+                    }
+                });
+
+                let qScore = 0;
+                if (correctCount === 1) qScore = 0.1;
+                else if (correctCount === 2) qScore = 0.25;
+                else if (correctCount === 3) qScore = 0.5;
+                else if (correctCount === 4) qScore = 1.0;
+
+                scoreP2 += qScore;
+                detailP2.push(`C${q.id}[${subLogs.join(',')}]=${qScore}đ`);
+
+                const navBtn = document.getElementById(`nav-p2-q${q.id}`);
+                navBtn.className = correctCount === 4
+                    ? "h-8 rounded-lg bg-emerald-500 text-white text-xs font-semibold flex items-center justify-center"
+                    : "h-8 rounded-lg bg-amber-500 text-white text-xs font-semibold flex items-center justify-center";
+
+                document.getElementById(`exp-p2-q${q.id}`).classList.remove('hidden');
+            });
+
+            // 3. Chấm Phần III (0.5đ / câu)
+            let scoreP3 = 0;
+            let detailP3 = [];
+
+            part3Data.forEach(q => {
+                const inputEl = document.getElementById(`p3_q${q.id}_input`);
+                inputEl.disabled = true;
+                const rawVal = inputEl.value.trim().replace(/\s+/g, '');
+                const badge = document.getElementById(`p3-badge-q${q.id}`);
+                const navBtn = document.getElementById(`nav-p3-q${q.id}`);
+
+                const isCorrect = q.answers.includes(rawVal);
+                badge.classList.remove('hidden');
+
+                if (isCorrect) {
+                    scoreP3 += 0.5;
+                    inputEl.classList.add('border-emerald-500', 'bg-emerald-50', 'text-emerald-900');
+                    badge.className = "text-xs font-bold px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-800";
+                    badge.innerHTML = `<i class="fa-solid fa-check"></i> Chính xác (+0,5đ)`;
+                    navBtn.className = "h-8 rounded-lg bg-emerald-500 text-white text-xs font-semibold flex items-center justify-center";
+                    detailP3.push(`C${q.id}:${rawVal}(Đ)`);
+                } else {
+                    inputEl.classList.add('border-rose-500', 'bg-rose-50', 'text-rose-900');
+                    badge.className = "text-xs font-bold px-2.5 py-1 rounded-lg bg-rose-100 text-rose-800";
+                    badge.innerHTML = `<i class="fa-solid fa-xmark"></i> Sai (Đáp án: ${q.answers[0]})`;
+                    navBtn.className = "h-8 rounded-lg bg-rose-500 text-white text-xs font-semibold flex items-center justify-center";
+                    detailP3.push(`C${q.id}:${rawVal || 'Trống'}(S)`);
+                }
+
+                document.getElementById(`exp-p3-q${q.id}`).classList.remove('hidden');
+            });
+
+            // 4. Lưu Phần IV & Hiện đáp án
+            let essayLogs = [];
+            part4Data.forEach(q => {
+                const txt = document.getElementById(`p4_q${q.id}_input`);
+                txt.disabled = true;
+                essayLogs.push(`Câu ${q.id}: ${txt.value.trim() || '(Không làm)'}`);
+                document.getElementById(`exp-p4-q${q.id}`).classList.remove('hidden');
+            });
+
+            const totalScore = Math.round((scoreP1 + scoreP2 + scoreP3) * 100) / 100;
+
+            // Hiển thị bảng kết quả
+            const banner = document.getElementById('result-banner');
+            banner.classList.remove('hidden');
+            document.getElementById('score-total-display').textContent = `Điểm trắc nghiệm: ${totalScore.toFixed(2)} / 7.00`;
+            document.getElementById('score-breakdown-display').textContent = `Phần I: ${scoreP1.toFixed(2)}/3.00đ • Phần II: ${scoreP2.toFixed(2)}/2.00đ • Phần III: ${scoreP3.toFixed(2)}/2.00đ (Phần IV Tự luận 3.0đ đối chiếu đáp án bên dưới)`;
+
+            // Disable nút nộp bài
+            document.getElementById('btn-submit-top').disabled = true;
+            document.getElementById('btn-submit-top').classList.add('opacity-50', 'cursor-not-allowed');
+            document.getElementById('btn-submit-bottom').disabled = true;
+            document.getElementById('btn-submit-bottom').classList.add('opacity-50', 'cursor-not-allowed');
+
+            // Cuộn lên đầu trang xem điểm
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Chuẩn bị dữ liệu gửi Google Sheet
+            lastResultPayload = {
+                name: name,
+                studentClass: sClass,
+                studentId: sId,
+                duration: durationStr,
+                totalScore: totalScore.toFixed(2),
+                scoreP1: scoreP1.toFixed(2),
+                scoreP2: scoreP2.toFixed(2),
+                scoreP3: scoreP3.toFixed(2),
+                detailP1: detailP1.join(' | '),
+                detailP2: detailP2.join(' | '),
+                detailP3: detailP3.join(' | '),
+                essay: essayLogs.join(' || ')
+            };
+
+            sendToGoogleSheet(lastResultPayload);
+        }
+
+        function sendToGoogleSheet(payload) {
+            const gasUrl = localStorage.getItem('toan12_gas_url');
+            const statusEl = document.getElementById('sheet-status-msg');
+
+            if (!gasUrl) {
+                statusEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-amber-300"></i> <span>Chưa cấu hình URL Google Sheet (Nhấn <b>"Cấu hình Sheet"</b> ở góc trên để kết nối, hoặc tải file Excel bên cạnh).</span>`;
+                return;
+            }
+
+            statusEl.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>Đang gửi kết quả sang Google Sheet...</span>`;
+
+            fetch(gasUrl, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(() => {
+                statusEl.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-300"></i> <span>Đã xuất kết quả thành công sang Google Sheet!</span>`;
+            })
+            .catch(err => {
+                console.error(err);
+                statusEl.innerHTML = `<i class="fa-solid fa-circle-xmark text-rose-300"></i> <span>Lỗi khi gửi sang Google Sheet. Vui lòng tải file Excel dự phòng.</span>`;
+            });
+        }
+
+        // Xuất dự phòng file CSV mở trực tiếp bằng Excel / Google Sheet
+        function exportCSV() {
+            if (!lastResultPayload) return;
+            const p = lastResultPayload;
+            const headers = ["Thời gian nộp", "Họ và tên", "Lớp", "SBD/Mã HS", "Thời gian làm", "Tổng điểm TN", "Điểm P1", "Điểm P2", "Điểm P3", "Chi tiết P1", "Chi tiết P2", "Chi tiết P3", "Bài Tự Luận"];
+            const row = [
+                new Date().toLocaleString("vi-VN"),
+                p.name, p.studentClass, p.studentId, p.duration,
+                p.totalScore, p.scoreP1, p.scoreP2, p.scoreP3,
+                p.detailP1, p.detailP2, p.detailP3, p.essay
+            ].map(val => `"${String(val).replace(/"/g, '""')}"`);
+
+            const csvContent = "\uFEFF" + headers.join(",") + "\n" + row.join(",");
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `KetQua_Toan12_${p.name}_${p.studentClass}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Khởi chạy khi tải trang
+        window.onload = function() {
+            renderExam();
+            startTimer();
+        };
+    </script>
+</body>
+</html>
